@@ -12,7 +12,7 @@ class ColeColeGUI(object):
         default_text_width = 10
         pad_width_a = 2
         pad_width_b = 10
-        
+
         self.f0.set("297.0")  # MHz
         self.fmin.set("0.0")  # MHz
         self.fmax.set("600.0") # MHz
@@ -25,8 +25,6 @@ class ColeColeGUI(object):
                                      font = ("Arial", 16))
         
         self.frame_title.grid(row = 0, column = 1, columnspan = 3)
-
-
 
         # Section: Frequency
         ttk.Label(master,
