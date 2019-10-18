@@ -13,9 +13,9 @@ class ColeColeGUI(object):
         pad_width_a = 2
         pad_width_b = 10
 
-        self.f0.set("297.0")  # MHz
-        self.fmin.set("0.0")  # MHz
-        self.fmax.set("600.0") # MHz
+        #self.f0.set("297.0")  # MHz
+        #self.fmin.set("0.0")  # MHz
+        #self.fmax.set("600.0") # MHz
         self.master = master
         self.master.title("Cole-Cole Parameter Calculator")
         separator_style = ttk.Style()
@@ -59,59 +59,92 @@ class ColeColeGUI(object):
         ttk.Label(master, 
                   text = "Inf. Freq. Rel. Permittivity",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 1, column = 0, padx = pad_width_a, sticky = tk.E)
+                  style = "BW.TLabel").grid(row = ccp_row + 1,
+                                            column = 0,
+                                            padx = pad_width_a,
+                                            sticky = tk.E)
         ttk.Label(master,
                   text = "\u03c3",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 1, column = 2, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 1,
+                                            column = 2,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u0394 1",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 2, column = 0, padx = pad_width_a, sticky = tk.E)
+                  style = "BW.TLabel").grid(row = ccp_row + 2,
+                                            column = 0,
+                                            padx = pad_width_a,
+                                            sticky = tk.E)
         ttk.Label(master,
                   text = "\u03c4 1",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 2, column = 2, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 2,
+                                            column = 2,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u03b1 1",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 2, column = 4, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 2,
+                                            column = 4,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u0394 2",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 3, column = 0, padx = pad_width_a, sticky = tk.E)
+                  style = "BW.TLabel").grid(row = ccp_row + 3,
+                                            column = 0,
+                                            padx = pad_width_a,
+                                            sticky = tk.E)
         ttk.Label(master,
                   text = "\u03c4 2",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 3, column = 2, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 3,
+                                            column = 2,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u03b1 2",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 3, column = 4, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 3,
+                                            column = 4,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u0394 3",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 4, column = 0, padx = pad_width_a, sticky = tk.E)
+                  style = "BW.TLabel").grid(row = ccp_row + 4,
+                                            column = 0,
+                                            padx = pad_width_a,
+                                            sticky = tk.E)
         ttk.Label(master,
                   text = "\u03c4 3",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 4, column = 2, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 4,
+                                            column = 2,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u03b1 3",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 4, column = 4, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 4,
+                                            column = 4,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text  = "\u0394 4",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 5, column = 0, padx = pad_width_a, sticky = tk.E)
+                  style = "BW.TLabel").grid(row = ccp_row + 5,
+                                            column = 0,
+                                            padx = pad_width_a,
+                                            sticky = tk.E)
         ttk.Label(master,
                   text = "\u03c4 4",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 5, column = 2, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 5,
+                                            column = 2,
+                                            padx = pad_width_a)
         ttk.Label(master,
                   text = "\u03b1 4",
                   anchor = tk.E,
-                  style = "BW.TLabel").grid(row = ccp_row + 5, column = 4, padx = pad_width_a)
+                  style = "BW.TLabel").grid(row = ccp_row + 5,
+                                            column = 4,
+                                            padx = pad_width_a)
         self.ef = tk.StringVar()
         self.ef.set("0.0")
         self.sigma = tk.StringVar()
@@ -146,86 +179,114 @@ class ColeColeGUI(object):
                                   justify = tk.RIGHT,
                                   state = self.entry_state,
                                   width = 20)
-        self.entry_ef.grid(row = ccp_row + 1, column = 1, padx = pad_width_b)
+        self.entry_ef.grid(row = ccp_row + 1,
+                           column = 1,
+                           padx = pad_width_b)
         self.entry_sigma = ttk.Entry(self.master,
                                      textvariable = self.sigma,
                                      justify = tk.RIGHT,
                                      state = self.entry_state,
                                      width = 20)
-        self.entry_sigma.grid(row = ccp_row + 1, column = 3, padx = pad_width_b)
+        self.entry_sigma.grid(row = ccp_row + 1,
+                              column = 3,
+                              padx = pad_width_b)
         self.entry_delta1 = ttk.Entry(self.master,
                                       textvariable = self.delta1,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_delta1.grid(row = ccp_row + 2, column = 1, padx = pad_width_b)
+        self.entry_delta1.grid(row = ccp_row + 2,
+                               column = 1,
+                               padx = pad_width_b)
         self.entry_delta2 = ttk.Entry(self.master,
                                       textvariable = self.delta2,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_delta2.grid(row = ccp_row + 3, column = 1, padx = pad_width_b)
+        self.entry_delta2.grid(row = ccp_row + 3,
+                               column = 1,
+                               padx = pad_width_b)
         self.entry_delta3 = ttk.Entry(self.master,
                                       textvariable = self.delta3,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_delta3.grid(row = ccp_row + 4, column = 1, padx = pad_width_b)
+        self.entry_delta3.grid(row = ccp_row + 4,
+                               column = 1,
+                               padx = pad_width_b)
         self.entry_delta4 = ttk.Entry(self.master,
                                       textvariable = self.delta4,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_delta4.grid(row = ccp_row + 5, column = 1, padx = pad_width_b)
+        self.entry_delta4.grid(row = ccp_row + 5,
+                               column = 1,
+                               padx = pad_width_b)
         self.entry_tau1 = ttk.Entry(self.master,
                                     textvariable = self.tau1,
                                     justify = tk.RIGHT,
                                     state = self.entry_state,
                                     width = 20)
-        self.entry_tau1.grid(row = ccp_row + 2, column = 3, padx = pad_width_b)
+        self.entry_tau1.grid(row = ccp_row + 2,
+                             column = 3,
+                             padx = pad_width_b)
         self.entry_tau2 = ttk.Entry(self.master,
                                     textvariable = self.tau2,
                                     justify = tk.RIGHT,
                                     state = self.entry_state,
                                     width = 20)
-        self.entry_tau2.grid(row = ccp_row + 3, column = 3, padx = pad_width_b)
+        self.entry_tau2.grid(row = ccp_row + 3,
+                             column = 3,
+                             padx = pad_width_b)
         self.entry_tau3 = ttk.Entry(self.master,
                                     textvariable = self.tau3,
                                     justify = tk.RIGHT,
                                     state = self.entry_state,
                                     width = 20)
-        self.entry_tau3.grid(row = ccp_row + 4, column = 3, padx = pad_width_b)
+        self.entry_tau3.grid(row = ccp_row + 4,
+                             column = 3,
+                             padx = pad_width_b)
         self.entry_tau4 = ttk.Entry(self.master,
                                     textvariable = self.tau4,
                                     justify = tk.RIGHT,
                                     state = self.entry_state,
                                     width = 20)
-        self.entry_tau4.grid(row = ccp_row + 5, column = 3, padx = pad_width_b)
+        self.entry_tau4.grid(row = ccp_row + 5,
+                             column = 3,
+                             padx = pad_width_b)
         self.entry_alpha1 = ttk.Entry(self.master,
                                       textvariable = self.alpha1,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_alpha1.grid(row = ccp_row + 2, column = 5, padx = pad_width_b)
+        self.entry_alpha1.grid(row = ccp_row + 2,
+                               column = 5,
+                               padx = pad_width_b)
         self.entry_alpha2 = ttk.Entry(self.master,
                                       textvariable = self.alpha2,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_alpha2.grid(row = ccp_row + 3, column = 5, padx = pad_width_b)
+        self.entry_alpha2.grid(row = ccp_row + 3,
+                               column = 5,
+                               padx = pad_width_b)
         self.entry_alpha3 = ttk.Entry(self.master,
                                       textvariable = self.alpha3,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_alpha3.grid(row = ccp_row + 4, column = 5, padx = pad_width_b)
+        self.entry_alpha3.grid(row = ccp_row + 4,
+                               column = 5,
+                               padx = pad_width_b)
         ccp_row_last = ccp_row + 5
         self.entry_alpha4 = ttk.Entry(self.master,
                                       textvariable = self.alpha4,
                                       justify = tk.RIGHT,
                                       state = self.entry_state,
                                       width = 20)
-        self.entry_alpha4.grid(row = ccp_row_last, column = 5, padx = pad_width_b)
+        self.entry_alpha4.grid(row = ccp_row_last,
+                               column = 5,
+                               padx = pad_width_b)
 
         button_row = ccp_row_last + 1
 
