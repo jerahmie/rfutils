@@ -35,7 +35,8 @@ class TestFieldReaderCST2019(unittest.TestCase):
     def test_read_fields(self):
         """Test read_fields method to populate field matrices.
         """
-        efields = self.assertFalse(self.fr.read_fields('*[pw].h5'))
+        efields = self.assertTrue(self.fr.read_fields('*[pw].h5'))
+        fields = self.assertFalse(self.fr.read_fields('this_file_does_not_exist.h5'))
 
     def tearDown(self):
         pass
