@@ -9,6 +9,8 @@ class NormalDielectric(object):
     """Normal Dielectric
        Parameters
        ----------
+        f0 : float
+            Frequency in MHz
         xdim : array_like
             X- grid points
         ydim : array_like
@@ -21,7 +23,7 @@ class NormalDielectric(object):
             H-field data sampled on rectangular grid (xdim)x(ydim)x(zdim)x(3)
     """
     def __init__(self, f0, xdim, ydim, zdim, e_field_data, h_field_data):
-        self._frequency = f0
+        self._frequency = f0*1.0e6
         self._xdim = xdim
         self._ydim = ydim
         self._zdim = zdim
