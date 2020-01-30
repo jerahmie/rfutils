@@ -9,6 +9,8 @@ class NormalDielectric(object):
     """Normal Dielectric
        Parameters
        ----------
+       f0:  float
+            frequency of interest
         xdim : array_like
             X- grid points
         ydim : array_like
