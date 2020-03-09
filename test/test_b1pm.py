@@ -1,8 +1,8 @@
 """Unit tests for converting Cartesian field components to rotating fields.
 """
-
- import unittest
- from rfutils import b1pm
+import os
+import unittest
+from rfutils.emfield import EMField
 
 class TestB1PM(unittest.TestCase):
     """Unittests for b1pm module.
@@ -21,9 +21,9 @@ class TestB1PM(unittest.TestCase):
         self.assertTrue(True)
 
     def test_EMField(self):
-        em1 = b1pm.EMField()
-        self.assert
-
+        em1 = EMField()
+        self.assertIsInstance(em1, EMField)
+        
     def tearDown(self):
         pass
 

@@ -7,12 +7,12 @@ import numpy as np
 class EMField(object):
     """A class to hold electromagnetic field data.
     """
-    def __init__(field_file=None):
-        self.field_file = field_file
+    def __init__(self, field_file=None):
+        self._field_file = field_file
 
     @property
     def field_file(self):
-        return self.field_file
+        return self._field_file
     
 
 
