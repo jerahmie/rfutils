@@ -48,8 +48,10 @@ class NormalDielectric(object):
         deltay = self._ydim[1: -1] - self._ydim[0: -2]
         deltaz = self._zdim[1: -1] - self._zdim[0: -2]
 
-        dy = deltay[0] * 0.001
-        dz = deltaz[0] * 0.001
+        #dy = deltay[0] * 0.001
+        #dz = deltaz[0] * 0.001
+        dy = deltay[0]
+        dz = deltaz[0]
 
         dhzdy = np.zeros(np.shape(efxsq), dtype=np.complex)
         dhydz = np.zeros(np.shape(efxsq), dtype=np.complex)
