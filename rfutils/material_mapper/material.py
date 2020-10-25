@@ -13,6 +13,13 @@ class Material(object):
         self._epsr = epsr
         self._sigma = sigma
         self._density = density
+
+    def __str__(self):
+        matstr = "Material: " + self._name + "\n" + \
+                 "\t - Permittivity: " + str(self._epsr) + "\n" + \
+                 "\t - Conductivity: " + str(self._sigma) + " (S/m) \n" + \
+                 "\t -      Density: " + str(self._density) + " (m^-3) \n"
+        return matstr
         
     @property
     def frequency(self):
