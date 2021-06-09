@@ -45,8 +45,6 @@ class TestViz(unittest.TestCase):
         # reset standard output
         sys.stdout = sys.__stdout__
         print(self.ts_file)
-        
-
 
     def tearDown(self):
         pass

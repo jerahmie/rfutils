@@ -24,7 +24,7 @@ def plot_fields_mag(field_file):
         field_min = None
     elif 'B-Field' in field_keys:
         field_type = 'B-Field'
-        field_max = 1.5e-6
+        field_max = 0.5e-6
         field_min = 0.0
     else:
         raise('Unknown field type.  Available types: ' + str(field_type))
@@ -48,30 +48,32 @@ def plot_fields_mag(field_file):
     
     fig, ax = plt.subplots(1,3)
     plt.set_cmap('jet')
-    i_ind = 80
-    j_ind = 90
-    k_ind = 100
+    print(0.5*len(xdim))
+    i_ind = int(0.5*len(xdim))
+    j_ind = int(0.5*len(ydim))
+    k_ind = int(0.25*len(zdim))
     plt.sca(ax[0])
     ax[0].autoscale(enable=True, axis='both',tight=True)
     XX,YY = np.meshgrid(xdim, ydim)
     plt.pcolor(XX, YY, 1e6*np.rot90(fp_abs[:,:,k_ind],2), vmin=field_min, vmax=field_max)
+    plt.title('index: k=' + str(k_ind))
     plt.colorbar()
     plt.sca(ax[1])
     ax[1].autoscale(enable=True, axis='both',tight=True)
     XX,YY = np.meshgrid(xdim, zdim)
     plt.pcolor(XX, YY, 1e6*np.rot90(fp_abs[:,j_ind,:],2), vmin=field_min, vmax=field_max)
+    plt.title('index: j=' +  str(j_ind))
     plt.colorbar()
     plt.sca(ax[2])
     ax[2].autoscale(enable=True, axis='both',tight=True)
     XX,YY = np.meshgrid(ydim, zdim)
     plt.pcolor(XX, YY, 1e6*np.rot90(fp_abs[i_ind,:,:],3), vmin=field_min, vmax=field_max)
+    plt.title('index: i=' +  str(i_ind))
     plt.colorbar()
     plt.show()
 
-
 if __name__ == "__main__":
-    field_file = os.path.join('D:\\', 'Temp_CST', 
-    'KU_Ten_32_ELD_Dipole_element_v3_with_Rx32_feeds', 'Export','3d',
-    'B1+ (f=447) [AC9].h5')
+    field_file = os.path.join('F:\\', '16Tx_7T_LB Phantom_40mm shield_1_4_1', 
+    'Export','3d','B1+ (f=300) [AC9].h5')
     print(os.path.exists(field_file))
     plot_fields_mag(field_file)
