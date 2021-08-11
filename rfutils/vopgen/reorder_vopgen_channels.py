@@ -50,7 +50,7 @@ def reorder_vopgen_channels(remap_file, field_file_old, field_file_new):
     fmap_arrayn_new = np.zeros(np.shape(fmap_arrayn_old), dtype=np.complex)
     for channel in range(nchannels):
         print(coil_map[channel][0], ' -> ', coil_map[channel][1])
-        fmap_arrayn_new[:,:,:,:,int(coil_map[channel][1])-1] = fmap_arrayn_old[:,:,:,:,channel-1 ]
+        fmap_arrayn_new[:,:,:,:,int(coil_map[channel][1])-1] = fmap_arrayn_old[:,:,:,:,int(coil_map[channel][0])-1 ]
 
     fields_new_dict = dict()
     fields_new_dict['XDim'] = fields_old_dict['XDim']
@@ -64,15 +64,19 @@ def reorder_vopgen_channels(remap_file, field_file_old, field_file_new):
 
 if "__main__" == __name__:
     if 'win32' == sys.platform:
-        sys.exit()
-    elif 'linux' == sys.platform:
-        vopgen_prefix = os.path.join('/mnt', 'Data', 'CST_Projects', 'Vopgen')
-        efield_file_orig = os.path.join(vopgen_prefix, 'efMapArrayN_orig.mat')
-        efield_file_remap = os.path.join(vopgen_prefix, 'efMapArrayN_remap.mat')
-        bfield_file_orig = os.path.join(vopgen_prefix, 'bfMapArrayN_orig.mat')
-        bfield_file_remap = os.path.join(vopgen_prefix, 'bfMapArrayN_remap.mat')
-        channel_remap_file = os.path.join(vopgen_prefix,
-                                          'KU_ten_32_channel_renumbering_9Jan2019.txt')          
+        vopgen_prefix=os.path.join('E:',os.sep,'CST_Field_Post', 'KU_Ten_32_16CH_Tx','KU_ten_32_Tx_MRT_23Jul2019','Export','Vopgen')
+        print("[DEBUG] Platform = win32")
+        print("[DEBUG] vopgen_prefix: ", vopgen_prefix)
+
+    #elif 'linux' == sys.platform:
+        #vopgen_prefix = os.path.join('/mnt','e','CST_Field_Post','KU_ten_32_Tx_MRT_23Jul2019', 'Vopgen')
+    orig_prefix = os.path.join(vopgen_prefix, 'orig') 
+    efield_file_orig = os.path.join(orig_prefix, 'efMapArrayN.mat')
+    efield_file_remap = os.path.join(vopgen_prefix, 'efMapArrayN.mat')
+    bfield_file_orig = os.path.join(orig_prefix, 'bfMapArrayN.mat')
+    bfield_file_remap = os.path.join(vopgen_prefix, 'bfMapArrayN.mat')
+    channel_remap_file = os.path.join(vopgen_prefix,
+                                      'KU_ten_32_channel_renumbering_9Jan2019.txt')          
     
     reorder_vopgen_channels(channel_remap_file, efield_file_orig, efield_file_remap)
     reorder_vopgen_channels(channel_remap_file, bfield_file_orig, bfield_file_remap)
