@@ -48,6 +48,7 @@ class NormalDielectric(object):
         deltay = self._ydim[1: -1] - self._ydim[0: -2]
         deltaz = self._zdim[1: -1] - self._zdim[0: -2]
 
+
         dy = deltay[0] # meters
         dz = deltaz[0] 
 
