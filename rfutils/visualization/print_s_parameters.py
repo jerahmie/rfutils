@@ -2,8 +2,11 @@
 """Print routines for scattering matrices from scikit-rf networks.
 """
 import os
+import sys
+
 import numpy as np
 import skrf as rf
+
 
 def pretty_print_s_parameters(ntwk, f0=447e6):
     """Pretty print the scattering matrix at frequency.
