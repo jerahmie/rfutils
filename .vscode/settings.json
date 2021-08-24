@@ -1,6 +1,7 @@
 {
     "python.pythonPath": "c:\\Users\\jerahmie\\devenv\\Scripts\\python.exe",
-    "python.linting.pylintEnabled": true,
+    "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "python.linting.pylamaEnabled": true
 }
