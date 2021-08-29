@@ -40,7 +40,7 @@ def plot_rotating_field(rotating_fields, zval, sarmask = None):
     print(zind, type(zind))
     for ix in range(nrows):
         for jy in range(ncols):
-            #b1mag = np.multiply(np.abs(bfMapArrayN[:,:,zind,0,channel_count], np.conj(bfMapArrayN[:,:,zind, 0, channel_count])))
+            b1mag = np.multiply(np.abs(bfMapArrayN[:,:,zind,0,channel_count], np.conj(bfMapArrayN[:,:,zind, 0, channel_count])))
             b1slice = np.sqrt(np.abs(np.multiply(bfMapArrayN[:,:,zind,0,channel_count], \
                         np.conj(bfMapArrayN[:,:,zind,0,channel_count]))))
             if sarmask is not None:
@@ -71,7 +71,7 @@ def plot_fields_subset(ax, fields_dict, channel, zval=0.0, sarmask = None):
         b1p_mag[:,:] = np.multiply(b1p_mag[:,:], sarmask[:,:,zind])
 
     XX,YY = np.meshgrid(xdim, ydim)
-    mesh = ax.pcolormesh(XX,YY,b1p_mag[:,:], vmin=0.0, vmax=0.25e-6)
+    mesh = ax.pcolormesh(np.transpose(XX),np.transpose(YY),b1p_mag[:,:], vmin=0.0, vmax=1e-6)
     ax.set_aspect('equal','box')
     ax.set_title(str(channel))
 
@@ -81,8 +81,10 @@ if __name__ == '__main__':
     if sys.platform == "win32":
         vopgen_dir = os.path.join('D:\\','Temp_CST','Vopgen','KU_ten_32_Tx_MRT_23Jul2019','Vopgen')
     elif sys.platform == "linux":
-        matplotlib.use('Qt5Agg')
-        vopgen_dir = os.path.join('/mnt','Data','Temp_CST','Vopgen','KU_ten_32_Tx_MRT_23Jul2019','Vopgen')
+        #matplotlib.use('Qt5Agg')
+        #vopgen_dir = os.path.join('/mnt','Data','Temp_CST','Vopgen','KU_ten_32_Tx_MRT_23Jul2019','Vopgen')
+        vopgen_dir = os.path.join('/mnt','Data','Temp_CST','KU_Ten_32_FDA_21Jul2021_4_6','Export','3d','Vopgen')
+
     else:
         sys.exit('Could not identify OS.')
 
@@ -105,6 +107,7 @@ if __name__ == '__main__':
     #
     sarmask_file = os.path.join(vopgen_dir, 'sarmask_aligned.mat')
     sarmask_new =  hdf5storage.loadmat(sarmask_file)['sarmask_new']
+    
 
     print("Plotting results...")
     fig1, fig1_axs = plt.subplots(1, round(nchannels/2), constrained_layout=True)
@@ -112,8 +115,8 @@ if __name__ == '__main__':
     channels_top = list(range(1,nchannels,2))
     channels_bottom = list(range(2,nchannels+1,2))
     for i, ch in enumerate(channels_top):
-        plot_fields_subset(fig1_axs[i], bfMapArrayN, ch, zval=0.182, sarmask=sarmask_new)
+        plot_fields_subset(fig1_axs[i], bfMapArrayN, ch, zval=0.2, sarmask=sarmask_new)
 
     for i, ch in enumerate(channels_bottom):
-        plot_fields_subset(fig2_axs[i], bfMapArrayN, ch, zval=0.292, sarmask=sarmask_new)
+        plot_fields_subset(fig2_axs[i], bfMapArrayN, ch, zval=0.4, sarmask=sarmask_new)
     plt.show()

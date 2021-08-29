@@ -60,7 +60,6 @@ class NormalDielectric(object):
                                                            self._e_field[:,:,:,1]))
         self._sigma_eff_from_j[:,:,:,2] = np.abs(np.divide(self._j_density[:,:,:,2],
                                                            self._e_field[:,:,:,2]))
-        
 
     def _extract_materials_x(self):
         """Extract material properties for X-direction.
@@ -75,15 +74,15 @@ class NormalDielectric(object):
         print('omega0: ', omega0)
 
         print('_extract_materials_x: ', dy, ', ', dz)
-        dhzdy = np.zeros(np.shape(efxsq), dtype=np.complex)
-        dhydz = np.zeros(np.shape(efxsq), dtype=np.complex)
+        dhzdy = np.zeros(np.shape(efxsq), dtype=np.complex128)
+        dhydz = np.zeros(np.shape(efxsq), dtype=np.complex128)
         dhzdy[:, 1:-2, :] = 1.0 / (2.0 * dy) * (self._h_field[:, 2:-1, :, 2] -
                                                 self._h_field[:, 0:-3, :, 2])
         dhydz[:, :, 1:-2] = 1.0 / (2.0 * dz) * (self._h_field[:, :, 2:-1, 1] -
                                                 self._h_field[:, :, 0:-3, 1])
-        self._sigma_eff_x = np.zeros(np.shape(self._e_field[:, :, :, 0]), dtype=np.double)
+        self._sigma_eff_x = np.zeros(np.shape(self._e_field[:, :, :, 0]), dtype=np.float64)
         self._sigma_eff_x = np.real(np.divide(np.conj(self._e_field[:, :, :, 0]) * (dhzdy - dhydz), efxsq))
-        self._eps_r_x = np.zeros(np.shape(self._e_field[:, :, :, 0]), dtype=np.double)
+        self._eps_r_x = np.zeros(np.shape(self._e_field[:, :, :, 0]), dtype=np.float64)
         self._eps_r_x = (1.0 / (omega0 * epsilon_0))* np.imag(np.divide(np.conj(self._e_field[:, :, :, 0]) * (dhzdy - dhydz), efxsq))
         #self._material_properties_valid = True
 
