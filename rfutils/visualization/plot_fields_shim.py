@@ -11,6 +11,7 @@ else:
     import glob
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 try:
     import hdf5storage
     import h5py
@@ -28,16 +29,14 @@ def apply_shim(field, magnitudes, phases, rot_dir=0):
     Raises
     """
     field_shape = np.shape(field)
-    if len(magnitudes) != field_shape[-1]:
+    if len(magnitudes) != field_shape[-1] or len(phases) != field_shape[-1]:
         sys.exit("Number of channels in fields does not equal number of magnitudes/phases: "
-            + str(len(magnitudes) + "/" + str(len(phases) + "/" + str(field_shape[-1]))))
+            + str(len(magnitudes)) + "/" + str(len(phases)) + ", expected: " + str(field_shape[-1]))
     fields_component = field[:,:,:,rot_dir,:]
 
     fields_shimmed = np.zeros(np.shape(fields_component)[0:3], dtype=complex)
-    #print('fields_shimmed: ', np.shape(fields_shimmed)[0:2])
-    #print('field_component: ', np.shape(fields_component)[0:3])
     for ch in range(field_shape[-1]):
-        fields_shimmed += np.multiply(fields_component[:,:,:,ch], np.exp(1.0j*phases[ch]), dtype=np.complex128)
+        fields_shimmed += np.multiply(magnitudes[ch], np.multiply(fields_component[:,:,:,ch], np.exp(1.0j*phases[ch]), dtype=np.complex128))
     
     return  fields_shimmed
 
@@ -51,7 +50,7 @@ def slice_indices(xdim, ydim, zdim, point_xyz):
     return x_ind, y_ind, z_ind
     
 def plot_fields_shimmed(field3d, xdim, ydim, zdim, slice_xyz, mask=None, 
-                        field_min=0.0, field_max=3.0e-6):
+                        field_min=0.0, field_max=6.0e-6):
     """plot_fields_shimmed
     Plot the shimmed fields at given slice indices
     """
@@ -84,6 +83,64 @@ def plot_fields_shimmed(field3d, xdim, ydim, zdim, slice_xyz, mask=None,
     fig.colorbar(im, cax=cbar_ax)
     plt.show()
 
+def plot_bmag_axis(xdim, ydim, data2d, pos=0.0, axis='x', vmax=6e-6):
+    """Plot the axial |B1+| cross-section map and |B1+| through a section of the 
+    plot.
+    Args:
+        xdim:    (ndarray) x indices
+        ydim:    (ndarray) y indices
+        data2d:  (ndarray), real: 2-dimensional, real data array to be plotted.
+        axis:    (string): 'x' or 'y', for line through data
+        pos:     (real):  x- or y- position of the line through the data.
+    Returns:
+        handle to matplotlib figure
+    Raises:
+        Exception if axis not valid
+    """
+    if axis == 'y':
+        xind = np.argmin(np.abs(xdim - pos))
+        # hard-coded limits
+        y1 = -0.11
+        y1_ind = np.argmin(np.abs(ydim-y1))
+        y2 = 0.09
+        y2_ind = np.argmin(np.abs(ydim-y2))
+        data1d = data2d[xind,y1_ind:y2_ind]
+        x1d = ydim[y1_ind:y2_ind]
+        xaxis_label = "Position along y-axis (m)"
+        def line_plot(ax):
+            ax.vlines(pos, ydim[y1_ind], ydim[y2_ind], colors='w', linestyle='dashed')
+    elif axis == 'x':
+        yind = np.argmin(np.abs(ydim - pos))
+        # hard-coded limits
+        x1 = -0.075
+        x1_ind = np.argmin(np.abs(xdim-x1))
+        x2 = 0.075
+        x2_ind = np.argmin(np.abs(xdim-x2))
+        data1d = data2d[x1_ind:x2_ind,yind]
+        x1d = xdim[x1_ind:x2_ind]
+        xaxis_label = "Position along x-axis (m)"
+        def line_plot(ax):
+            ax.hlines(pos, xdim[x1_ind], xdim[x2_ind], colors='w', linestyle='dashed')
+    else:
+        raise Exception('Bad Axis selected: must be "x", or "y"')
+
+    fig, axs = plt.subplots(1,2)
+    plt.set_cmap('jet')
+    XX,YY = np.meshgrid(xdim, ydim)
+    p1 = axs[0].pcolormesh(np.transpose(XX), np.transpose(YY), data2d, vmin=0.0, vmax=vmax)
+    axs[0].autoscale(enable=True, axis='both', tight=True)
+    axs[0].set_aspect('equal','box')
+    axs[0].set_title('|B1+| Midplane (T)')
+    axs[0].set_xlabel('x (m)')
+    axs[0].set_ylabel('y (m)')
+    line_plot(axs[0])
+    plt.colorbar(p1, ax=axs[0])
+    plt.ylim=vmax
+    axs[1].set_title('|B1+| Along Axis (T)')
+    axs[1].plot(x1d, data1d)
+    axs[1].set_xlabel(xaxis_label)
+    return axs
+
 def plot_mask(mask, xdim, ydim, zdim, slice_xyz):
     """Plot the field mask through given slices"""
     x_ind, y_ind, z_ind = slice_indices(xdim, ydim, zdim, slice_xyz)
@@ -101,38 +158,59 @@ def plot_mask(mask, xdim, ydim, zdim, slice_xyz):
     plt.show()
 
 if __name__ == "__main__":
-    nchannels = 16
+    nchannels = 8
     #field_export_dir = os.path.join("F:", os.sep, "16Tx_7T_LB Phantom_40mm shield_1_4_1","Export","3d","Vopgen")
-    field_export_dir = os.path.join(r'D:', os.sep, r'Temp_CST',r'KU_Ten_32_FDA_21Jul2021_4_6',r'Export',r'3d',r'Vopgen')
+    #field_export_dir = os.path.join(r'D:', os.sep, r'Temp_CST',r'KU_Ten_32_FDA_21Jul2021_4_6',r'Export',r'3d',r'Vopgen')
+    field_export_dir = os.path.join(r'D:', os.sep, r'CST_Projects',r'Garwood',
+                                    r'Degenerated_Birdcage_1r5T_64MHz',
+                                    r'Degenerated_Birdcage_1r5T_64MHz_Shield_Fields_2',
+                                    r'Export',r'3d', r'Vopgen2')
     field_name = "bfMapArrayN.mat"
     mask_name = "sarmask_aligned.mat"
 
+    
+
     # plot SAR mask
-    mask_dict = hdf5storage.loadmat(os.path.join(field_export_dir, mask_name))
+    #mask_dict = hdf5storage.loadmat(os.path.join(field_export_dir, mask_name))
     #plot_mask(mask_dict['sarmask_new'], mask_dict['XDim'], mask_dict['YDim'], 
     #          mask_dict['ZDim'], (0.0, 0.0, 0.0))    
     
     # plot B1+ 
     #mags = [1.0 if ch%2 == 1 else 0.0 for ch in range(nchannels)]
-    mags = [1.0 for ch in range(nchannels)]
-    print(mags)
-    #cp_phases_top = [1.0*np.pi/nchannels * ch  for ch in range(0,nchannels,2)]
-    #cp_phases_bottom = [-2.0*np.pi/nchannels + np.pi/nchannels * ch for ch in range(1,nchannels,2)]
-    #cp_phases_top = [-1.0*np.pi/nchannels * ch  for ch in range(0,nchannels,2)]
-    #cp_phases_bottom = [2*np.pi/nchannels - np.pi/nchannels * ch for ch in range(1,nchannels,2)]    
-    #cp_phases = [None]*(len(cp_phases_top) + len(cp_phases_bottom))
-    #cp_phases[::2] = cp_phases_top
-    #cp_phases[1::2] = cp_phases_bottom
-    #print(np.array(cp_phases) * 180/np.pi)
-    #cable_phases = [11.3139, 13.0444, 9.7166, 11.4470, 8.1194, 11.5801, 9.7166, 13.0443, 11.3139,  13.0443, 9.5835, 11.5801, 8.1194, 11.5801, 9.8497, 13.0443]
-    #cp_phases = np.array(cp_phases) + np.array(cable_phases)
-    cp_phases = np.pi/180*np.array([54.2514, -115.9637, 54.8956, -82.2456, 61.7822, -75.7515, 51.0311, 129.0421, -77.4862,  71.8050, -36.3305, 163.3601, -81.7879, 51.7028, -169.5938, -92.9703])
-    
-    #sys.exit()
-    field_dict = hdf5storage.loadmat(os.path.join(field_export_dir, field_name))
-    shimmed_fields = apply_shim(field_dict['bfMapArrayN'], mags, cp_phases)
-    print(cp_phases)
-    plot_fields_shimmed(np.abs(shimmed_fields), field_dict['XDim'],
-                         field_dict['YDim'], field_dict['ZDim'], 
-                         (0.0, 0.0, 0.25), mask_dict['sarmask_new'])
+    #mags = [1.0 for ch in range(nchannels)]
+    #mags = [1.0 if ch==2 else 0.0 for ch in range(nchannels)]
+    #phases = np.pi/180*np.linspace(0, -360, num=nchannels, endpoint=False)
+    # PtxShim
+    #mags = [0.832, 1.3, 1.66, 1.96, 1.66, 1.3, 0.832, 0.16]
 
+    # y-shim
+    mags = [1.0, 1.0, 1.2, 1.5, 1.96, 1.66, 1.45, 1.25]
+    #phases = [-1.0*np.pi/180*(angle) for angle in [-45, 0, 45, 90, 135, 180, 225, 270]]
+    phases = [-1.0*np.pi/180*(angle) for angle in [-45, 0, 45, 90, 135, 180, 225, 270]]
+
+    # PtxShim1
+    #mags = [1.5, 1.75, 1.75, 1.96, 1.75, 1.8, 1.75, 1.4]
+    #phases = [-1.0*np.pi/180*angle for angle in [-22.5, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5]]
+    # PtxShim2
+    #mags = [1.75, 1.2, 1.5, 1.75, 1.75, 1.96, 1.85, 1.8]
+    #phases = [-1.0*np.pi/180*angle for angle in [-22.5, 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5]]
+
+
+    print('mags: ', mags)
+    print('phases: ', phases)
+    
+    field_dict = hdf5storage.loadmat(os.path.join(field_export_dir, field_name))
+    
+    print(field_dict.keys())
+    
+    shimmed_fields = apply_shim(field_dict['bfMapArrayN'], mags, phases)
+
+    #plot_fields_shimmed(np.abs(shimmed_fields), field_dict['XDim'],
+    #                     field_dict['YDim'], field_dict['ZDim'], 
+    #                     (0.0, 0.0, 0.0))
+    zpos = 0.0
+    zind = np.argmin(np.abs(field_dict['ZDim']-zpos))
+    ax = plot_bmag_axis(field_dict['XDim'], field_dict['YDim'], 
+                        np.abs(shimmed_fields[:,:,zind]), pos=0, axis='y')
+    
+    plt.show()
