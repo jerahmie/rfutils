@@ -13,9 +13,6 @@ class EMField(object):
     @property
     def field_file(self):
         return self._field_file
-    
-
-
 
 if __name__ == "__main__":
     field_cartesian_file = os.path.join('/mnt','e','CST_Backup','AC_Zero_Phase.h5')
