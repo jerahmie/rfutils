@@ -106,22 +106,55 @@ def rms_error_at_freq(s1, s2):
 
 
 if __name__ == "__main__":
+
+    # use a dialog box for interactive file selection.
+
     #if len(sys.argv) > 1:
     #    plot_s_parameters(sys.argv[1:])
     #else:
     #    usage()
-    data_dir = os.path.join('D:\\','Temp_CST',)
-    #data_file_list = ['8CH_ELdipole_commongnd-23cmCONE_notraps_cloneELDipole_6-30-2020.s8p',
+    #data_dir = os.path.join('D:\\','Temp_CST',)
+    #data_files = ['8CH_ELdipole_commongnd-23cmCONE_notraps_cloneELDipole_6-30-2020.s8p',
     #                  'KU_Ten_32_8CH_RL_Tx_Dipole_Tuned_v2_4_opt1.s8p']
-    #data_file_list = ['KU_Ten_32_ELD_Dipole_element_v3_with_Rx32_5_28Sept2020.s8p',
+    #data_files = ['KU_Ten_32_ELD_Dipole_element_v3_with_Rx32_5_28Sept2020.s8p',
     #                  '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p']
-    data_file_list = ['KU_Ten_128_Rx_v2_full_1.s122p']
-    full_data_file_list = [os.path.join(data_dir, file) for file in data_file_list]
-    for file in full_data_file_list:
-        print(file, ' exists? ', os.path.exists(file))
-    #plot_s_parameters(full_data_file_list)
-    print(full_data_file_list[0])
-    s_simulation = s_matrix_at_freq(full_data_file_list[0], 447e6)
+    #data_files = ['KU_Ten_128_Rx_v2_full_1.s122p']
+
+
+    # if data_files wasn't hand coded, use the file dialog.
+    try:
+        data_files  # check if data_file has been defined
+    except NameError:
+        print("Opening files with file dialog...")
+        from tkinter import Tk
+        from tkinter.filedialog import askopenfilenames
+        import pickle
+        Tk().withdraw()  # prevent root window from appearing
+        start_dir_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp')  # start directory pickle 
+        if os.path.exists(start_dir_file):
+            with open(start_dir_file, 'rb') as fh:
+                try:
+                    start_dir = pickle.load(fh)
+                except:               # use current directory if pickle is malformed
+                    start_dir = os.getcwd()
+        else:
+            start_dir = os.getcwd()
+
+    # show the open dialog
+    data_files = askopenfilenames(initialdir=start_dir,
+                                  title="Open Touchstone Files",
+                                  filetypes=(("Touchstone files","*.s*p"),("all files","*.*")))
+
+
+    # Exit if no files were selected.
+    if data_files == '':
+        sys.exit("No files to process.  Exiting.")
+
+    # Save current working directory
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp'),'wb') as fh:
+        pickle.dump(data_files[0], fh)
+
+    s_measured = s_matrix_at_freq(data_files[0], 447e6)
     #s_simulation = s_matrix_at_freq(full_data_file_list[1], 447e6)
     #rmse_mag, rmse_angle = rms_error_at_freq(s_measured, s_simulation)
     #print('RMS Error: Magnitude: ', rmse_mag,', Angle (deg): ', rmse_angle)
@@ -130,17 +163,17 @@ if __name__ == "__main__":
     #plot the results
     vmin = -30
     vmax = 0
-    #fig, ax = plt.subplots(1,2)
+    fig, ax = plt.subplots(1,2)
     #plt.sca(ax[0])
     #plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=vmin, vmax=vmax)
     #plt.title('|S| Simulation (dB)')
     
     #plt.sca(ax[1])
-    #im = plt.imshow(20*np.log10(np.abs(s_measured)), cmap='jet', vmin=vmin, vmax=vmax)
-    #plt.title('|S| Measurement (dB)')
-    #fig.subplots_adjust(right=0.8)
-    #cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    #plt.colorbar(im, cax=cbar_ax)
+    im = plt.imshow(20*np.log10(np.abs(s_measured)), cmap='jet', vmin=vmin, vmax=vmax)
+    plt.title('|S| Measurement (dB)')
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    plt.colorbar(im, cax=cbar_ax)
     #fig.suptitle("RMS Error: " + "{:.4f}".format(rmse_mag))
 
     #fig2, ax2 = plt.subplots(1,2)
@@ -160,6 +193,5 @@ if __name__ == "__main__":
     #plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=vmin, vmax=vmax)
     #plt.title('|S| Simulation (dB)')
     #plt.show()
-    plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=-40, vmax=0)
-    plt.colorbar()
+    #plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=-40, vmax=0)
     plt.show()
