@@ -7,6 +7,7 @@ import os
 import numpy as np
 import skrf as rf
 import matplotlib.pyplot as plt
+from gui_helpers import openfilegui
 
 def usage():
     """Print usage and exit.
@@ -98,6 +99,7 @@ def rms_error_at_freq(s1, s2):
     return rmse, rmse_angle
 
 
+
 #def compare_sparam_at_freq(touchstone_file_list, freq=447e6):
 #   """Compare two touchstone files at the frequency of interest.
 #        plot the sparameter map 
@@ -125,34 +127,36 @@ if __name__ == "__main__":
     try:
         data_files  # check if data_file has been defined
     except NameError:
-        print("Opening files with file dialog...")
-        from tkinter import Tk
-        from tkinter.filedialog import askopenfilenames
-        import pickle
-        Tk().withdraw()  # prevent root window from appearing
-        start_dir_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp')  # start directory pickle 
-        if os.path.exists(start_dir_file):
-            with open(start_dir_file, 'rb') as fh:
-                try:
-                    start_dir = pickle.load(fh)
-                except:               # use current directory if pickle is malformed
-                    start_dir = os.getcwd()
-        else:
-            start_dir = os.getcwd()
+        data_files = openfilegui(title="Open Touchstone Files",
+                                  filetypes=(("Touchstone Files","*.s*p"), ("all files","*.*")))
+        #print("Opening files with file dialog...")
+        #from tkinter import Tk
+        #from tkinter.filedialog import askopenfilenames
+        #import pickle
+        #Tk().withdraw()  # prevent root window from appearing
+        #start_dir_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp')  # start directory pickle 
+        #if os.path.exists(start_dir_file):
+        #    with open(start_dir_file, 'rb') as fh:
+        #        try:
+        #            start_dir = pickle.load(fh)
+        #        except:               # use current directory if pickle is malformed
+        #            start_dir = os.getcwd()
+        #else:
+        #    start_dir = os.getcwd()
 
     # show the open dialog
-    data_files = askopenfilenames(initialdir=start_dir,
-                                  title="Open Touchstone Files",
-                                  filetypes=(("Touchstone files","*.s*p"),("all files","*.*")))
+    #data_files = askopenfilenames(initialdir=start_dir,
+    #                              title="Open Touchstone Files",
+    #                              filetypes=(("Touchstone files","*.s*p"),("all files","*.*")))
 
 
     # Exit if no files were selected.
-    if data_files == '':
+    if data_files == '' or data_files == None:
         sys.exit("No files to process.  Exiting.")
 
     # Save current working directory
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp'),'wb') as fh:
-        pickle.dump(data_files[0], fh)
+    #with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp'),'wb') as fh:
+    #    pickle.dump(data_files[0], fh)
 
     s_measured = s_matrix_at_freq(data_files[0], 447e6)
     #s_simulation = s_matrix_at_freq(full_data_file_list[1], 447e6)
