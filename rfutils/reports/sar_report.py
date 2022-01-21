@@ -2,11 +2,7 @@
 Generate a report for SAR calculations.
 """
 
-import os
-import sys
-import numpy
 from fpdf import FPDF
-import matplotlib.pyplot as plt
 
 
 def create_sar_report():
@@ -15,11 +11,12 @@ def create_sar_report():
     pdf = FPDF('P', 'in', 'Letter')
     print(dir(pdf))
     pdf.add_page()
-    pdf.set_font('Times','B',16)
-    pdf.cell(3, 3, 'Hello World!',1)
+    pdf.set_font('Times', 'B', 16)
+    pdf.cell(3, 3, 'Hello World!', 1)
     pdf.ln(1)
     pdf.cell(3, 8, 'Powerered by FPDF.', 0, 1, 'C')
     pdf.output(name='test.pdf', dest='F')
+
 
 if __name__ == "__main__":
     print("Generating SAR report")

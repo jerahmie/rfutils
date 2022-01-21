@@ -8,6 +8,7 @@ import numpy as np
 import skrf as rf
 import matplotlib.pyplot as plt
 from gui_helpers import openfilegui, openfilequick
+from load_mask import extract_mask
 
 def usage():
     """Print usage and exit.
@@ -52,7 +53,7 @@ def s_matrix_at_freq(smatrix1_file, freq=447e6):
     if m != n:
         print("S-matrix is malformed.")
         return None
-    s_at_freq = np.zeros((m,n), dtype=np.complex)
+    s_at_freq = np.zeros((m,n), dtype=complex)
     freq_ind = np.argmin(np.abs(smat.f - freq))
     for i in range(m):
         for j in range(n):
@@ -99,79 +100,67 @@ def rms_error_at_freq(s1, s2):
     return rmse, rmse_angle
 
 
-
-#def compare_sparam_at_freq(touchstone_file_list, freq=447e6):
-#   """Compare two touchstone files at the frequency of interest.
-#        plot the sparameter map 
-#        calculate the RMS error between the touchstone files
-#    """
-
-
 if __name__ == "__main__":
 
-    # use a dialog box for interactive file selection.
+    # use a dialog box for i nteractive file selection.
 
-    #if len(sys.argv) > 1:
-    #    plot_s_parameters(sys.argv[1:])
-    #else:
-    #    usage()
-    #data_dir = os.path.join('D:\\','Temp_CST',)
-    #data_files = ['8CH_ELdipole_commongnd-23cmCONE_notraps_cloneELDipole_6-30-2020.s8p',
-    #                  'KU_Ten_32_8CH_RL_Tx_Dipole_Tuned_v2_4_opt1.s8p']
-    #data_files = ['KU_Ten_32_ELD_Dipole_element_v3_with_Rx32_5_28Sept2020.s8p',
-    #                  '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p']
-    #data_files = ['KU_Ten_128_Rx_v2_full_1.s122p']
-
-    print(openfilequick())
     # if data_files wasn't hand coded, use the file dialog.
     try:
         data_files  # check if data_file has been defined
     except NameError:
-        data_files = openfilegui(title="Open Touchstone Files",
-                                  filetypes=(("Touchstone Files","*.s*p"), ("all files","*.*")))
+        data_files = []
+        data_files.append(openfilegui(title="Open Touchstone Files (Measured)",
+                                  filetypes=(("Touchstone Files","*.s*p"), ("all files","*.*"))))
+        data_files.append(openfilegui(title="Open Touchstone Files (Simulation)",
+                                  filetypes=(("Touchstone Files","*.s*p"), ("all files","*.*"))))
     # Exit if no files were selected.
     if data_files == '' or data_files == None:
         sys.exit("No files to process.  Exiting.")
 
-
-    # Save current working directory
-    #with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'start_dir.tmp'),'wb') as fh:
-    #    pickle.dump(data_files[0], fh)
-
     s_measured = s_matrix_at_freq(data_files[0], 447e6)
-    #s_simulation = s_matrix_at_freq(full_data_file_list[1], 447e6)
-    #rmse_mag, rmse_angle = rms_error_at_freq(s_measured, s_simulation)
-    #print('RMS Error: Magnitude: ', rmse_mag,', Angle (deg): ', rmse_angle)
+    s_simulation = s_matrix_at_freq(data_files[1], 447e6)
+    rmse_mag, rmse_angle = rms_error_at_freq(s_measured, s_simulation)
+    print('RMS Error: Magnitude: ', rmse_mag,', Angle (deg): ', rmse_angle)
 
+    try:
+        spmaskfile
+    except NameError:
+        spmaskfile = openfilegui(title="Select S-Parameter Mask",
+                                filetypes=(("Tab Separated Values","*.tsv"),
+                                ("all files", "*.*")))
+        if os.path.exists(spmaskfile):
+            spmask = extract_mask(spmaskfile)
+            if np.shape(spmask) != np.shape(s_measured):
+                print("Shape of Mask {} != Shape of S-Parameter array {}".format(np.shape(spmask), np.shape(np.shape(s_measured))))            
+        else:
+            spmask = np.ones(np.shape(s_measured))
     
     #plot the results
     vmin = -30
     vmax = 0
     fig, ax = plt.subplots(1,2)
-    #plt.sca(ax[0])
-    #plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=vmin, vmax=vmax)
-    #plt.title('|S| Simulation (dB)')
+    plt.sca(ax[0])
+    plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_simulation))), cmap='jet', vmin=vmin, vmax=vmax)
+    plt.title('|S| Simulation (dB)')
     
-    #plt.sca(ax[1])
-    im = plt.imshow(20*np.log10(np.abs(s_measured)), cmap='jet', vmin=vmin, vmax=vmax)
+    plt.sca(ax[1])
+    im = plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_measured))), cmap='jet', vmin=vmin, vmax=vmax)
     plt.title('|S| Measurement (dB)')
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     plt.colorbar(im, cax=cbar_ax)
     #fig.suptitle("RMS Error: " + "{:.4f}".format(rmse_mag))
 
-    #fig2, ax2 = plt.subplots(1,2)
-    #plt.sca(ax2[0])
-    #plt.imshow(180.0/np.pi*np.angle(s_simulation), cmap='jet')
-    #plt.title('Phase Simulation (deg)')
-    #plt.sca(ax2[1])
-    #im2 = plt.imshow(180.0/np.pi*np.angle(s_measured), cmap='jet')
-    #plt.title('Phase Measurement (deg)')
-    #fig2.subplots_adjust(right=0.8)
-    #cbar_ax2 = fig2.add_axes([0.85, 0.15, 0.05, 0.7])
-    #plt.colorbar(im2, cax=cbar_ax2)
-    #plt.show()
-
+    fig2, ax2 = plt.subplots(1,2)
+    plt.sca(ax2[0])
+    plt.imshow(np.multiply(spmask, np.angle(s_simulation)), cmap='jet')
+    plt.title('Phase Simulation (deg)')
+    plt.sca(ax2[1])
+    im2 = plt.imshow(np.multiply(spmask, np.angle(s_measured)), cmap='hsv')
+    plt.title('Phase Measurement (deg)')
+    fig2.subplots_adjust(right=0.8)
+    cbar_ax2 = fig2.add_axes([0.85, 0.15, 0.05, 0.7])
+    plt.colorbar(im2, cax=cbar_ax2)
 
     # Just plot s-parameters
     #plt.imshow(20*np.log10(np.abs(s_simulation)), cmap='jet', vmin=vmin, vmax=vmax)

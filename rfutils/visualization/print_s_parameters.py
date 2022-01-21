@@ -6,7 +6,7 @@ import sys
 
 import numpy as np
 import skrf as rf
-
+from gui_helpers import openfilegui
 
 def pretty_print_s_parameters(ntwk, f0=447e6):
     """Pretty print the scattering matrix at frequency.
@@ -28,8 +28,15 @@ if __name__ == "__main__":
     #ts_file = os.path.abspath(os.path.join(os.path.dirname(__file__),
     #                          '..', '..', 'test_data',
     #                          '8CH_ELdipole_commongnd-23cmCONE_notraps_cloneELDipole_6-30-2020.s8p')) 
-    ts_file = os.path.join('D:\\', 'Temp_CST',
-                           '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p')              
+    #ts_file = os.path.join('D:\\', 'Temp_CST',
+    #                       '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p')              
+    try:
+        ts_file
+    except NameError:
+        print("Touchstone file not specified.  Proceeding with GUI file dialog.")
+        ts_file = openfilegui(title="Select Touchstone File")
+        
+    print("Touchstone file: ", ts_file)
     print("pretty print s-parameters.")
     ntwk = rf.Network(ts_file)
     pretty_print_s_parameters(ntwk)

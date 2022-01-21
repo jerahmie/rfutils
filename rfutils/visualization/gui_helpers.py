@@ -22,7 +22,7 @@ def openfilegui(start_dir=os.getcwd(), title="Open File",
            start_dir = os.getcwd()
 
     # show the open dialog
-    data_files = askopenfilenames(initialdir=start_dir, title=title, filetypes=filetypes)
+    data_files = askopenfilename(initialdir=start_dir, title=title, filetypes=filetypes)
     if len(data_files) > 0:
         # Save current working directory
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
