@@ -11,6 +11,10 @@ from gui_helpers import openfilegui
 def pretty_print_s_parameters(ntwk, f0=447e6):
     """Pretty print the scattering matrix at frequency.
     """
+    # formatting lambdas
+    to_decibels = lambda a: 20.0*np.log10(np.abs(a))
+    to_phase_degrees = lambda a: 180.0/np.pi*np.angle(a)
+
     nn = np.shape(ntwk.s)[1]
     freq = ntwk.f
     f0_ind = np.argmin(np.abs(freq-f0))
@@ -19,8 +23,13 @@ def pretty_print_s_parameters(ntwk, f0=447e6):
     for i in range(nn):
         for j in range(nn):
             #pretty_str +=   "      " + "    |   ".join(str(np.abs(ntwk.s[f0_ind, i, j]))) + "\n"
-            print('(', i+1, ',', j+1 ,'): ','{:6.2f} '.format(20*np.log10(np.abs(ntwk.s[f0_ind,i,j]))),
-            ', {:7.2f}'.format(180.0/np.pi*np.angle(ntwk.s[f0_ind,i,j])))
+            #print('(', i+1, ',', j+1 ,'): ','{:6.2f} '.format(to_decibel(np.abs(ntwk.s[f0_ind,i,j]))),
+            #', {:7.2f}'.format(180.0/np.pi*np.angle(ntwk.s[f0_ind,i,j])))
+            print('(', i+1, ',', j+1 ,'): ',
+                    '{:6.2f} '.format(to_decibels(ntwk.s[f0_ind,i,j])),
+                    ', {:7.2f}'.format(to_phase_degrees(ntwk.s[f0_ind,i,j])), ' | ',
+                    '{:6.5f} '.format(np.real(ntwk.s[f0_ind,i,j])), 
+                    ', {:6.5f}'.format(np.imag(ntwk.s[f0_ind,i,j])))
     #print(pretty_str)
 
 
