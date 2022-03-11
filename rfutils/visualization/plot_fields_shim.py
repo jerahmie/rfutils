@@ -167,7 +167,7 @@ def plot_mask(mask, xdim, ydim, zdim, slice_xyz):
     plt.show()
 
 if __name__ == "__main__":
-    field_export_dir = "D:/CST_Projects/Self_Decoupled/Self_Decoupled_10r5t_16tx_Cosim_Tune_Match_2/Export/Vopgen"
+    #field_export_dir = "D:/CST_Projects/Self_Decoupled/Self_Decoupled_10r5t_16tx_Cosim_Tune_Match_2/Export/Vopgen"
     try:
         field_export_dir
     except NameError:

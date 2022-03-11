@@ -4,6 +4,7 @@
 
 import sys
 import os
+import copy
 import numpy as np
 import skrf as rf
 import matplotlib.pyplot as plt
@@ -137,14 +138,17 @@ if __name__ == "__main__":
     
     #plot the results
     vmin = -30
-    vmax = 0
+    vmax = -0.1
+    cmap1 = copy.copy(plt.cm.jet)
     fig, ax = plt.subplots(1,2)
     plt.sca(ax[0])
-    plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_simulation))), cmap='jet', vmin=vmin, vmax=vmax)
+    im1 = plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_simulation))), cmap=cmap1, vmin=vmin, vmax=vmax)
+    im1.cmap.set_over('navy')
     plt.title('|S| Simulation (dB)')
     
     plt.sca(ax[1])
-    im = plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_measured))), cmap='jet', vmin=vmin, vmax=vmax)
+    im = plt.imshow(np.multiply(spmask, 20*np.log10(np.abs(s_measured))), cmap=cmap1, vmin=vmin, vmax=vmax)
+    im.cmap.set_over('navy')
     plt.title('|S| Measurement (dB)')
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
