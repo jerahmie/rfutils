@@ -37,9 +37,22 @@ pub fn remap_smat_at_f(coil_map: HashMap<i32, i32>, smat: HashMap<(i32,i32), Str
     let nchannels = coil_map.len() as i32;
 
     // create string from hash maps
-    for i in 1..nchannels {
-        remapped_smat.push_str(&coil_map.get(&i).unwrap().to_string())
-    }
+    for i in 1..(nchannels+1) {
+        for j in 1..(nchannels+1) {
+            // channel number mappings:
+            // ii, jj: original channel numbering
+            let ii = coil_map.get(&i).unwrap(); 
+            let jj = coil_map.get(&j).unwrap();
+
+            remapped_smat.push_str("( ");
+            remapped_smat.push_str(&i.to_string());
+            remapped_smat.push_str(" , ");
+            remapped_smat.push_str(&j.to_string());
+            remapped_smat.push_str(" ):");
+            remapped_smat.push_str(&smat.get(&(*ii,*jj)).unwrap());
+            remapped_smat.push_str("\n");
+        }
+    }   
     Ok(remapped_smat)
 }
 
