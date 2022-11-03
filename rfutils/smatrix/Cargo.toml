@@ -7,3 +7,15 @@ edition = "2021"
 
 [dependencies]
 regex = "1.6.0"
+pyo3 = { version = "0.17.3", features = ["extension-module"] }
+ndarray = "0.15.3"
+numpy = "0.17.2"
+
+[lib]
+name = "smatrix"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "smatrix_main"
+path = "src/bin/bin.rs"
