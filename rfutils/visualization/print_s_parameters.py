@@ -3,7 +3,7 @@
 """
 import os
 import sys
-
+import argparse
 import numpy as np
 import skrf as rf
 from gui_helpers import openfilegui
@@ -38,7 +38,12 @@ if __name__ == "__main__":
     #                          '..', '..', 'test_data',
     #                          '8CH_ELdipole_commongnd-23cmCONE_notraps_cloneELDipole_6-30-2020.s8p')) 
     #ts_file = os.path.join('D:\\', 'Temp_CST',
-    #                       '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p')              
+    #                       '8CH-ELD_KU32insert_Lightbulb_RXtrap-tuned_09-28-20.s8p')
+    parser = argparse.ArgumentParser(
+        prog = 'print_s_parameters',
+        description = 'Utility to print the s-parameters at given frequency.'
+        epilog = '')
+    
     try:
         ts_file
     except NameError:
