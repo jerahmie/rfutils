@@ -10,7 +10,6 @@ Regex
 """
 import sys
 import os
-#import copy
 import re
 import numpy as np
 import matplotlib.pyplot as plt
@@ -133,8 +132,8 @@ def plot_s_params(smat: np.ndarray, title: str="",
 if __name__ == "__main__":
 
     s_param_files = []
-    s_param_files.append(os.path.join('/home','jerahmie','workspace',
-                                 'rfutils','test_data','s_params_original.txt'))
+    #s_param_files.append(os.path.join('/home','jerahmie','workspace',
+    #                             'rfutils','test_data','s_params_original.txt'))
     # use a dialog box for i nteractive file selection.
 
     # if data_files wasn't hand coded, use the file dialog.

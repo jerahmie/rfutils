@@ -5,6 +5,8 @@ use std::collections::HashMap;
 use std::io::{self};
 use regex::Regex;
 
+
+// read in scattering matrix data for fixed frequency
 pub fn get_smat_at_f(file_path: &Path) -> io::Result<HashMap<(i32,i32),String>> {
     println!("remap_smat_at_f");
     let mut f = File::open(file_path)?;
@@ -31,7 +33,7 @@ pub fn get_smat_at_f(file_path: &Path) -> io::Result<HashMap<(i32,i32),String>> 
     Ok(smat_hm)
 }
 
-
+// Remap channels for scattering matrix for fixed frequency
 pub fn remap_smat_at_f(coil_map: HashMap<i32, i32>, smat: HashMap<(i32,i32), String>) -> io::Result<String> {
     let mut remapped_smat = "".to_owned();
     let nchannels = coil_map.len() as i32;
@@ -56,6 +58,7 @@ pub fn remap_smat_at_f(coil_map: HashMap<i32, i32>, smat: HashMap<(i32,i32), Str
     Ok(remapped_smat)
 }
 
+// contruct a hashmap scattering matrix data per channel
 pub fn channel_map(file_path: &Path) -> io::Result<HashMap<i32, i32>>{
     let mut channel_hm: HashMap<i32, i32> = HashMap::new();
     let rg = Regex::new(r"^[ ]*([0-9]+)[ ,]+([0-9]+)$").unwrap();
