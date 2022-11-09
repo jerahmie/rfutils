@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Print routines for scattering matrices from scikit-rf networks.
+
 """
 import os
 import sys
@@ -7,6 +8,19 @@ import argparse
 import numpy as np
 import skrf as rf
 from gui_helpers import openfilegui
+
+def usage():
+    """ Display the usage message.
+    """
+    print("")
+    print(" usage: print_s_parameters.py input_file")
+    print("   input_file: touchstone file")
+    print("")
+    print(" Example: ")
+    print(" print_s_parameters.py sparameters.s16 | tee s_params_447MHz.txt -- display and save the 16x16 s-parameters file.")
+    print(" print_s_parameters.py sparameters.s16p  -- display the 16x16 s-parameters to STDOUT")
+    print(" print_s_parameters.py sparameters.s8p > s_params_447MHz.txt  -- save the 8x8 s-parameters to file")
+    print("")
 
 def pretty_print_s_parameters(ntwk, f0=447e6):
     """Pretty print the scattering matrix at frequency.
@@ -47,7 +61,6 @@ if __name__ == "__main__":
     try:
         ts_file
     except NameError:
-        print("Touchstone file not specified.  Proceeding with GUI file dialog.")
         ts_file = openfilegui(title="Select Touchstone File")
         
     print("Touchstone file: ", ts_file)
